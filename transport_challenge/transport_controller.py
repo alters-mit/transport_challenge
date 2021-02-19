@@ -1,3 +1,4 @@
+from os import environ
 from json import loads
 from csv import DictReader
 from typing import List, Dict, Tuple, Optional, Union
@@ -71,6 +72,13 @@ class Transport(Magnebot):
     """
     GOAL_ZONE_RADIUS: float = 1
 
+    # The public S3 bucket.
+    __PUBLIC_BUCKET: str = "https://tdw-public.s3.amazonaws.com"
+    # The IBM bucket.
+    __IBM_BUCKET: str = "TBD"
+    # If this key is in the environment variables, use the IBM bucket.
+    __IBM_ENV_KEY: str = "ibm_transport_challenge"
+
     # The scale factor of each container relative to its original size.
     __CONTAINER_SCALE = {"x": 0.6, "y": 0.4, "z": 0.6}
 
@@ -142,6 +150,9 @@ class Transport(Magnebot):
             for row in reader:
                 self._target_objects[row["name"]] = float(row["scale"])
         self._target_object_names = list(self._target_objects.keys())
+
+        # Whether or not we should use the IBM bucket.
+        self._use_ibm_bucket: bool = Transport.__IBM_ENV_KEY in environ()
 
     def init_scene(self, scene: str, layout: int, room: int = None, goal_room: int = None) -> ActionStatus:
         """
@@ -581,6 +592,13 @@ class Transport(Magnebot):
                                 rotation={"x": 0, "y": self._rng.uniform(-179, 179), "z": 0})
         return commands
 
+    def get_add_scene(self, scene_name: str, library: str = "") -> dict:
+        command = super().get_add_scene(scene_name=scene_name, library=library)
+        # Use the IBM URLs.
+        if self._use_ibm_bucket:
+            command["url"] = command["url"].replace(Transport.__PUBLIC_BUCKET, Transport.__IBM_BUCKET)
+        return command
+
     def _cache_static_data(self, resp: List[bytes]) -> None:
         # Reset the action counter and challenge status.
         self.action_cost = 0
@@ -645,11 +663,32 @@ class Transport(Magnebot):
         # Set a random visual material for each target object.
         visual_material = self._rng.choice(Transport.__TARGET_OBJECT_MATERIALS)
         substructure = Transport.__LIBRARIAN.get_record(model_name).substructure
-        self._object_init_commands[object_id].extend(TDWUtils.set_visual_material(substructure=substructure,
-                                                                                  material=visual_material,
-                                                                                  object_id=object_id,
-                                                                                  c=self,
-                                                                                  quality="low"))
+        visual_material_commands = TDWUtils.set_visual_material(substructure=substructure,
+                                                                material=visual_material,
+                                                                object_id=object_id,
+                                                                c=self,
+                                                                quality="low")
+        # If we're using the IBM bucket, use the IBM URLs.
+        if self._use_ibm_bucket:
+            for i in range(len(visual_material_commands)):
+                if "url" in visual_material_commands[i]:
+                    visual_material_commands[i]["url"] = visual_material_commands[i]["url"].\
+                        replace(Transport.__PUBLIC_BUCKET, Transport.__IBM_BUCKET)
+        self._object_init_commands[object_id].extend(visual_material_commands)
+        return object_id
+
+    def _add_object(self, model_name: str, position: Dict[str, float] = None,
+                    rotation: Dict[str, float] = None, library: str = "models_core.json",
+                    scale: Dict[str, float] = None, audio: ObjectInfo = None,
+                    mass: float = None) -> int:
+        object_id = super()._add_object(model_name=model_name, position=position, rotation=rotation, library=library,
+                                        scale=scale, audio=audio, mass=mass)
+        # If we're using the IBM bucket, use the IBM URLs.
+        if self._use_ibm_bucket:
+            for i in range(len(self._object_init_commands[object_id])):
+                if "url" in self._object_init_commands[object_id][i]:
+                    self._object_init_commands[object_id][i]["url"] = self._object_init_commands[object_id][i]["url"].\
+                        replace(Transport.__PUBLIC_BUCKET, Transport.__IBM_BUCKET)
         return object_id
 
     def _get_reset_arm_commands(self, arm: Arm, reset_torso: bool) -> List[dict]:

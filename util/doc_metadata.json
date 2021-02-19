@@ -11,7 +11,7 @@
     },
     "Ignore": {
       "description": "",
-      "functions": ["__init__", "drop", "get_scene_init_commands", "turn_by", "turn_to", "move_by", "reach_for", "grasp", "reset_position"]
+      "functions": ["__init__", "drop", "get_scene_init_commands", "turn_by", "turn_to", "move_by", "reach_for", "grasp", "reset_position", "get_add_scene"]
     }
   }
 }
