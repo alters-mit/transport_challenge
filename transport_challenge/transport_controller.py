@@ -1,5 +1,6 @@
 from json import loads
 from csv import DictReader
+from pkg_resources import resource_filename
 from typing import List, Dict, Tuple, Optional, Union
 import numpy as np
 from tdw.py_impact import ObjectInfo, AudioMaterial
@@ -9,7 +10,7 @@ from magnebot import Magnebot, Arm, ActionStatus, ArmJoint
 from magnebot.scene_state import SceneState
 from magnebot.paths import ROOM_MAPS_DIRECTORY, OCCUPANCY_MAPS_DIRECTORY, SCENE_BOUNDS_PATH, SPAWN_POSITIONS_PATH
 from transport_challenge.paths import TARGET_OBJECT_MATERIALS_PATH, TARGET_OBJECTS_PATH, CONTAINERS_PATH
-
+import random
 
 class Transport(Magnebot):
     """
@@ -88,7 +89,7 @@ class Transport(Magnebot):
 
     def __init__(self, port: int = 1071, launch_build: bool = False, screen_width: int = 256, screen_height: int = 256,
                  debug: bool = False, auto_save_images: bool = False, images_directory: str = "images",
-                 random_seed: int = None, img_is_png: bool = True, skip_frames: int = 10):
+                 random_seed: int = None, img_is_png: bool = True, skip_frames: int = 10, train = 1):
         """
         :param port: The socket port. [Read this](https://github.com/threedworld-mit/tdw/blob/master/Documentation/getting_started.md#command-line-arguments) for more information.
         :param launch_build: If True, the build will launch automatically on the default port (1071). If False, you will need to launch the build yourself (for example, from a Docker container).
@@ -142,8 +143,19 @@ class Transport(Magnebot):
             for row in reader:
                 self._target_objects[row["name"]] = float(row["scale"])
         self._target_object_names = list(self._target_objects.keys())
+        #print('!!!')
+        self.train = train
+        if self.train == 0:
+            self.data_path = resource_filename(__name__, "train_dataset.pkl")
+        else:
+            self.data_path = resource_filename(__name__, "test_dataset.pkl")
+        import pickle
+        with open(self.data_path, 'rb') as f:
+            self.dataset = pickle.load(f)
+        self.dataset_n = len(self.dataset)
+        self.dataset_id = 0
 
-    def init_scene(self, scene: str, layout: int, room: int = None, goal_room: int = None) -> ActionStatus:
+    def init_scene(self, scene: str, layout: int, room: int = None, goal_room: int = None, data_id = -1) -> ActionStatus:
         """
         This is the same function as `Magnebot.init_scene()` but it adds target objects and containers to the scene.
 
@@ -160,7 +172,14 @@ class Transport(Magnebot):
 
         :return: An `ActionStatus` (always success).
         """
-
+        #dataset
+        if data_id == -1:
+            data_id = random.randint(0, self.dataset_n - 1)
+        dataset_id = data_id % self.dataset_n
+        self.data = self.dataset[dataset_id]
+        scene = self.data['scene']['scene']
+        layout = self.data['scene']['layout']
+        room = self.data['scene']['room']
         # Set the room of the goal.
         rooms = np.unique(np.load(str(ROOM_MAPS_DIRECTORY.joinpath(f"{scene[0]}.npy").resolve())))
         if goal_room is None:
@@ -540,11 +559,19 @@ class Transport(Magnebot):
         used_target_object_positions: List[Tuple[int, int]] = list()
 
         # Add target objects to the room.
-        for i in range(self._rng.randint(8, 12)):
+        for c in self.data['target_object']:
+            model_name = c['model_name']
+            position = c['position']
+            self._add_target_object(model_name=model_name,
+                                    position=position)
+        '''for i in range(self._rng.randint(8, 12)):
             got_position = False
             ix, iy = -1, -1
             # Get a position where there isn't a target object.
             while not got_position:
+                target_room_index = self._rng.choice(np.array(list(rooms.keys())))
+                target_room_positions = np.array(rooms[target_room_index])
+                
                 ix, iy = target_room_positions[self._rng.randint(0, len(target_room_positions))]
                 got_position = True
                 for utop in used_target_object_positions:
@@ -555,9 +582,17 @@ class Transport(Magnebot):
             x, z = self.get_occupancy_position(ix, iy)
             self._add_target_object(model_name=self._rng.choice(self._target_object_names),
                                     position={"x": x, "y": 0, "z": z})
-
+        '''
         # Add containers throughout the scene.
-        containers = CONTAINERS_PATH.read_text(encoding="utf-8").split("\n")
+        
+        for c in self.data['container']:
+            model_name = c['model_name']
+            position = c['position']
+            rotation = c['rotation']
+            self._add_container(model_name=model_name,
+                                position=position,
+                                rotation=rotation)
+        '''containers = CONTAINERS_PATH.read_text(encoding="utf-8").split("\n")
         for room_index in list(rooms.keys()):
             # Maybe don't add a container in this room.
             if self._rng.random() < 0.25:
@@ -578,7 +613,7 @@ class Transport(Magnebot):
             container_name = self._rng.choice(containers)
             self._add_container(model_name=container_name,
                                 position={"x": x, "y": 0, "z": z},
-                                rotation={"x": 0, "y": self._rng.uniform(-179, 179), "z": 0})
+                                rotation={"x": 0, "y": self._rng.uniform(-179, 179), "z": 0})'''
         return commands
 
     def _cache_static_data(self, resp: List[bytes]) -> None:
