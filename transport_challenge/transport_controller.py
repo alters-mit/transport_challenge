@@ -77,7 +77,7 @@ class Transport(Magnebot):
     # The IBM bucket.
     __IBM_BUCKET: str = "TBD"
     # If this key is in the environment variables, use the IBM bucket.
-    __IBM_ENV_KEY: str = "ibm_transport_challenge"
+    __IBM_ENV_KEY: str = "TRANSPORT_CHALLENGE"
 
     # The scale factor of each container relative to its original size.
     __CONTAINER_SCALE = {"x": 0.6, "y": 0.4, "z": 0.6}
