@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.7
+
+### `Transport`
+
+- Fixed: Default value of `img_is_png` is True (it's now False)
+
 ## 0.1.6
 
 ### `Transport`
