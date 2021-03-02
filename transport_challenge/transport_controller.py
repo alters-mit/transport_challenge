@@ -161,7 +161,7 @@ class Transport(Magnebot):
                 self._target_objects[row["name"]] = float(row["scale"])
         self._target_object_names = list(self._target_objects.keys())
         # Whether or not we should use the IBM bucket.
-        self._use_ibm_bucket: bool = Transport.__IBM_ENV_KEY in environ()
+        self._use_ibm_bucket: bool = Transport.__IBM_ENV_KEY in environ
 
     def init_scene(self, scene: str, layout: int, room: int = None, goal_room: int = None,
                    random_seed: int = None) -> ActionStatus:
