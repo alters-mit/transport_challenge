@@ -2,6 +2,7 @@ from json import loads
 from csv import DictReader
 from typing import List, Dict, Tuple, Optional, Union
 import numpy as np
+from scipy.signal import convolve2d
 from tdw.py_impact import ObjectInfo, AudioMaterial
 from tdw.librarian import ModelLibrarian
 from tdw.tdw_utils import TDWUtils
@@ -34,7 +35,8 @@ class Transport(Magnebot):
 
     This API includes the following changes and additions:
 
-    - Procedurally add **containers** and **target objects** to the scene. Containers are boxes without lids that can hold objects; see the `containers` field. Target objects are small objects that must be transported to the goal zone; see the `target_objects` field. These containers and target objects are included alongside all other objects in [`self.objects_static` and `self.state`](https://github.com/alters-mit/magnebot/blob/main/doc/magnebot_controller.md#fields).    - Higher-level actions to pick up target objects and put them in containers.
+    - Procedurally add **containers** and **target objects** to the scene. Containers are boxes without lids that can hold objects; see the `containers` field. Target objects are small objects that must be transported to the goal zone; see the `target_objects` field. These containers and target objects are included alongside all other objects in [`self.objects_static` and `self.state`](https://github.com/alters-mit/magnebot/blob/main/doc/magnebot_controller.md#fields).
+    - Higher-level actions to pick up target objects and put them in containers.
     - A few new actions: `pick_up()`, `put_in()`, and `pour_out()`
     - Modified behavior for certain Magnebot actions such as `reset_arm()`
     - An interaction budget. The field `action_cost` increments by an action's "cost" at the end of the action:
@@ -85,10 +87,14 @@ class Transport(Magnebot):
 
     # Load a list of visual materials for target objects.
     __TARGET_OBJECT_MATERIALS = TARGET_OBJECT_MATERIALS_PATH.read_text(encoding="utf-8").split("\n")
+    """:class_var
+    The total number of target objects in a scene.
+    """
+    NUM_TARGET_OBJECTS: int = 8
 
     def __init__(self, port: int = 1071, launch_build: bool = False, screen_width: int = 256, screen_height: int = 256,
                  debug: bool = False, auto_save_images: bool = False, images_directory: str = "images",
-                 random_seed: int = None, img_is_png: bool = False, skip_frames: int = 10):
+                 random_seed: int = None, img_is_png: bool = False, skip_frames: int = 10, fov: float = 90):
         """
         :param port: The socket port. [Read this](https://github.com/threedworld-mit/tdw/blob/master/Documentation/getting_started.md#command-line-arguments) for more information.
         :param launch_build: If True, the build will launch automatically on the default port (1071). If False, you will need to launch the build yourself (for example, from a Docker container).
@@ -100,6 +106,7 @@ class Transport(Magnebot):
         :param random_seed: The random seed used for setting the start position of the Magnebot, the goal room, and the target objects and containers.
         :param img_is_png: If True, the `img` pass images will be .png files. If False, the `img` pass images will be .jpg files, which are smaller; the build will run approximately 2% faster.
         :param skip_frames: The build will return output data this many frames per `communicate()` call. This will greatly speed up the simulation. If you want to render every frame, set this to 0.
+        :param fov: The field of view for the Magnebot's camera.
         """
 
         super().__init__(port=port, launch_build=launch_build, screen_width=screen_width, screen_height=screen_height,
@@ -132,6 +139,8 @@ class Transport(Magnebot):
         """
         self.done: bool = False
 
+        # The field of view for the Magnebot's camera.
+        self.__fov: float = fov
         # Cached IK solution for resetting an arm holding a container.
         self._container_arm_reset_angles: Dict[Arm, np.array] = dict()
 
@@ -526,25 +535,32 @@ class Transport(Magnebot):
         self.occupancy_map = np.load(str(OCCUPANCY_MAPS_DIRECTORY.joinpath(f"{scene[0]}_{layout}.npy").resolve()))
         self._scene_bounds = loads(SCENE_BOUNDS_PATH.read_text())[scene[0]]
 
+        # Prevent objects from spawning at edges of the occupancy map.
+        convolve_map = np.zeros_like(self.occupancy_map)
+        convolve_map.fill(1)
+        convolve_map[self.occupancy_map == 0] = 0
+        conv = np.ones((3, 3))
+        convolve_map = convolve2d(convolve_map, conv, mode="same", boundary="fill")
+
         # Sort all free positions on the occupancy map by room.
         rooms: Dict[int, List[Tuple[int, int]]] = dict()
         for ix, iy in np.ndindex(room_map.shape):
             room_index = room_map[ix][iy]
             if room_index not in rooms:
                 rooms[room_index] = list()
-            if self.occupancy_map[ix][iy] == 0:
+            if convolve_map[ix][iy] == 0:
                 rooms[room_index].append((ix, iy))
         # Choose a random room.
-        target_room_index = self._rng.choice(np.array(list(rooms.keys())))
-        target_room_positions: np.array = np.array(rooms[target_room_index])
         used_target_object_positions: List[Tuple[int, int]] = list()
 
         # Add target objects to the room.
-        for i in range(self._rng.randint(8, 12)):
+        for i in range(Transport.NUM_TARGET_OBJECTS):
             got_position = False
             ix, iy = -1, -1
             # Get a position where there isn't a target object.
             while not got_position:
+                target_room_index = self._rng.choice(np.array(list(rooms.keys())))
+                target_room_positions: np.array = np.array(rooms[target_room_index])
                 ix, iy = target_room_positions[self._rng.randint(0, len(target_room_positions))]
                 got_position = True
                 for utop in used_target_object_positions:
@@ -559,8 +575,8 @@ class Transport(Magnebot):
         # Add containers throughout the scene.
         containers = CONTAINERS_PATH.read_text(encoding="utf-8").split("\n")
         for room_index in list(rooms.keys()):
-            # Maybe don't add a container in this room.
-            if self._rng.random() < 0.25:
+            # Maybe don't add a container in this room. Don't spawn a container in a very small room.
+            if len(rooms[room_index]) < 10 or self._rng.random() < 0.25:
                 continue
             # Get a random position in the room.
             room_positions: np.array = np.array(rooms[room_index])
@@ -710,3 +726,9 @@ class Transport(Magnebot):
             sides = sides[:-2]
 
         return sides, resp
+
+    def _get_scene_init_commands(self, magnebot_position: Dict[str, float] = None) -> List[dict]:
+        commands = super()._get_scene_init_commands(magnebot_position=magnebot_position)
+        commands.append({"$type": "set_field_of_view",
+                         "field_of_view": self.__fov})
+        return commands

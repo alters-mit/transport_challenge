@@ -1,6 +1,6 @@
 # Transport Challenge
 
-In the Transport Challenge API, the [**Magnebot**](https://github.com/alters-mit/magnebot) must transport **target objects** (small objects scattered on the floor of a randomly-chosen room) with the aid of **containers** (box-shaped objects without lids that can hold target objects) to the **goal zone** (a circle defined by a position and a radius in the center of a room and the scene).
+In the Transport Challenge API, the [**Magnebot**](https://github.com/alters-mit/magnebot) must transport **target objects** (small objects scattered throughout the scene) with the aid of **containers** (box-shaped objects without lids that can hold target objects) to the **goal zone** (a circle defined by a position and a radius in the center of a room and the scene).
 
 If all of the target objects are in the goal zone, the task is successful.
 
