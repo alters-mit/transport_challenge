@@ -546,9 +546,9 @@ class Transport(Magnebot):
         rooms: Dict[int, List[Tuple[int, int]]] = dict()
         for ix, iy in np.ndindex(room_map.shape):
             room_index = room_map[ix][iy]
-            if room_index not in rooms:
-                rooms[room_index] = list()
             if convolve_map[ix][iy] == 0:
+                if room_index not in rooms:
+                    rooms[room_index] = list()
                 rooms[room_index].append((ix, iy))
         used_target_object_positions: List[Tuple[int, int]] = list()
 

@@ -2,6 +2,7 @@ from os import chdir
 from typing import Dict, List, Union
 from pathlib import Path
 from subprocess import call
+from json import loads
 import numpy as np
 from tdw.tdw_utils import TDWUtils
 from tdw.output_data import OutputData, Images
@@ -20,7 +21,7 @@ class Demo(Transport):
     - Navigation is pre-calculated (see `PATH`).
     - Only the `img` pass is captured (not `id` or `depth`).
     - The screen is large, there is an overhead camera, and images are saved per-frame instead of per-action. This means that this controller will run *much* slower than a use-case controller.
-    - There are some low-level commands to optimize the demo such as teleporting a container and hiding the roof.
+    - There are some low-level commands to optimize the demo such as teleporting containers and target objects and hiding the roof.
     """
 
     # This is a pre-calculated path that the Magnebot will use to move between rooms.
@@ -134,14 +135,23 @@ class Demo(Transport):
         for waypoint in path:
             self.move_to(target=TDWUtils.array_to_vector3(waypoint))
 
-    def teleport_container(self) -> None:
+    def teleport_objects(self) -> None:
         """
-        Teleport a container into the same room as the Magnebot.
+        Teleport objects to where they should be for this demo.
         """
 
-        self._next_frame_commands.append({"$type": "teleport_object",
-                                          "id": self.containers[0],
-                                          "position": {"x": 7.44, "y": 0, "z": -2.62}})
+        data = loads(Path("init.json").read_text(encoding="utf-8"))
+        # Iterate through the containers and the target objects.
+        for k, lst in zip(["containers", "target_objects"], [self.containers, self.target_objects]):
+            # Set the positions and rotations.
+            for object_id, data_object_id in zip(lst, data[k]):
+                object_data = data[k][data_object_id]
+                self._next_frame_commands.extend([{"$type": "teleport_object",
+                                                   "id": object_id,
+                                                   "position": object_data["position"]},
+                                                  {"$type": "rotate_object_to",
+                                                   "id": object_id,
+                                                   "rotation": object_data["rotation"]}])
         self._end_action()
 
     def _get_scene_init_commands(self, magnebot_position: Dict[str, float] = None) -> List[dict]:
@@ -174,7 +184,7 @@ if __name__ == "__main__":
     # Add an overhead camera.
     m.add_camera(position={"x": -3.6, "y": 8, "z": -0.67}, look_at=True, follow=True)
 
-    m.teleport_container()
+    m.teleport_objects()
 
     # Pick up the  container.
     m.move_to(target=m.containers[0])

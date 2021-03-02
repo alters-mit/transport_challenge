@@ -12,6 +12,10 @@
 - Fixed: Containers sometimes spawn in very small rooms
 - Added optional parameter `fov` to the constructor
 
+## `Promo`
+
+- `promo.py` uses init data from `init.json` to reload its state
+
 ## 0.1.7
 
 ### `Transport`
