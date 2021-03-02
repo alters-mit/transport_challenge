@@ -158,7 +158,7 @@ _These functions are inherited from the Magnebot API but include additional func
 
 **`self.init_scene(scene, layout)`**
 
-**`self.init_scene(scene, layout, room=None, goal_room=None)`**
+**`self.init_scene(scene, layout, room=None, goal_room=None, random_seed=None)`**
 
 This is the same function as `Magnebot.init_scene()` but it adds target objects and containers to the scene.
 
@@ -175,6 +175,7 @@ Possible [return values](https://github.com/alters-mit/magnebot/blob/main/doc/ac
 | layout |  int |  | The furniture layout of the floorplan. Each number (0, 1, 2) will populate the floorplan with different furniture in different positions. |
 | room |  int  | None | The index of the room that the Magnebot will spawn in the center of. If None, the room will be chosen randomly. |
 | goal_room |  int  | None | The goal room. If None, this is chosen randomly. See field descriptions of `goal_room` and `goal_position` in this document. |
+| random_seed |  int  | None | If not None, set the random seed that is used for generating random numbers. This will override the `random_seed` parameter in the constructor. |
 
 _Returns:_  An `ActionStatus` (always success).
 

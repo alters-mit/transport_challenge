@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+### `Transport`
+
+- Added optional parameter `random_seed` to `init_scene()` to reset the random seed.
+
 ## 0.2.0
 
 - Added `scipy` as a required module

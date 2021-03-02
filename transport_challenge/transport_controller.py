@@ -152,7 +152,8 @@ class Transport(Magnebot):
                 self._target_objects[row["name"]] = float(row["scale"])
         self._target_object_names = list(self._target_objects.keys())
 
-    def init_scene(self, scene: str, layout: int, room: int = None, goal_room: int = None) -> ActionStatus:
+    def init_scene(self, scene: str, layout: int, room: int = None, goal_room: int = None,
+                   random_seed: int = None) -> ActionStatus:
         """
         This is the same function as `Magnebot.init_scene()` but it adds target objects and containers to the scene.
 
@@ -162,6 +163,7 @@ class Transport(Magnebot):
         :param layout: The furniture layout of the floorplan. Each number (0, 1, 2) will populate the floorplan with different furniture in different positions.
         :param room: The index of the room that the Magnebot will spawn in the center of. If None, the room will be chosen randomly.
         :param goal_room: The goal room. If None, this is chosen randomly. See field descriptions of `goal_room` and `goal_position` in this document.
+        :param random_seed: If not None, set the random seed that is used for generating random numbers. This will override the `random_seed` parameter in the constructor.
 
         Possible [return values](https://github.com/alters-mit/magnebot/blob/main/doc/action_status.md):
 
@@ -169,6 +171,9 @@ class Transport(Magnebot):
 
         :return: An `ActionStatus` (always success).
         """
+
+        if random_seed is not None:
+            self._rng = np.random.RandomState(random_seed)
 
         # Set the room of the goal.
         rooms = np.unique(np.load(str(ROOM_MAPS_DIRECTORY.joinpath(f"{scene[0]}.npy").resolve())))
