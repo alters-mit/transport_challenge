@@ -550,7 +550,6 @@ class Transport(Magnebot):
                 rooms[room_index] = list()
             if convolve_map[ix][iy] == 0:
                 rooms[room_index].append((ix, iy))
-        # Choose a random room.
         used_target_object_positions: List[Tuple[int, int]] = list()
 
         # Add target objects to the room.
