@@ -12,7 +12,11 @@
 - Fixed: Containers sometimes spawn in very small rooms
 - Added optional parameter `fov` to the constructor
 
-## `Promo`
+### Example controller
+
+- Simplified the logic of `single_room.py` and made it work with the changes in this update
+
+### Promo controller
 
 - `promo.py` uses init data from `init.json` to reload its state
 
