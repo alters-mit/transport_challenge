@@ -23,7 +23,8 @@ print(m.containers)
 
 This API includes the following changes and additions:
 
-- Procedurally add **containers** and **target objects** to the scene. Containers are boxes without lids that can hold objects; see the `containers` field. Target objects are small objects that must be transported to the goal zone; see the `target_objects` field. These containers and target objects are included alongside all other objects in [`self.objects_static` and `self.state`](https://github.com/alters-mit/magnebot/blob/main/doc/magnebot_controller.md#fields).    - Higher-level actions to pick up target objects and put them in containers.
+- Procedurally add **containers** and **target objects** to the scene. Containers are boxes without lids that can hold objects; see the `containers` field. Target objects are small objects that must be transported to the goal zone; see the `target_objects` field. These containers and target objects are included alongside all other objects in [`self.objects_static` and `self.state`](https://github.com/alters-mit/magnebot/blob/main/doc/magnebot_controller.md#fields).
+- Higher-level actions to pick up target objects and put them in containers.
 - A few new actions: `pick_up()`, `put_in()`, and `pour_out()`
 - Modified behavior for certain Magnebot actions such as `reset_arm()`
 - An interaction budget. The field `action_cost` increments by an action's "cost" at the end of the action:
@@ -57,6 +58,7 @@ This API includes the following changes and additions:
 | --- | --- | --- |
 | `TARGET_OBJECT_MASS` | float | The mass of each target object. |
 | `GOAL_ZONE_RADIUS` | float | The goal zone is a circle defined by `self.goal_center` and this radius value. |
+| `NUM_TARGET_OBJECTS` | int | The total number of target objects in a scene. |
 
 ***
 
@@ -156,7 +158,7 @@ _These functions are inherited from the Magnebot API but include additional func
 
 **`self.init_scene(scene, layout)`**
 
-**`self.init_scene(scene, layout, room=None, goal_room=None)`**
+**`self.init_scene(scene, layout, room=None, goal_room=None, random_seed=None)`**
 
 This is the same function as `Magnebot.init_scene()` but it adds target objects and containers to the scene.
 
@@ -173,6 +175,7 @@ Possible [return values](https://github.com/alters-mit/magnebot/blob/main/doc/ac
 | layout |  int |  | The furniture layout of the floorplan. Each number (0, 1, 2) will populate the floorplan with different furniture in different positions. |
 | room |  int  | None | The index of the room that the Magnebot will spawn in the center of. If None, the room will be chosen randomly. |
 | goal_room |  int  | None | The goal room. If None, this is chosen randomly. See field descriptions of `goal_room` and `goal_position` in this document. |
+| random_seed |  int  | None | If not None, set the random seed that is used for generating random numbers. This will override the `random_seed` parameter in the constructor. |
 
 _Returns:_  An `ActionStatus` (always success).
 

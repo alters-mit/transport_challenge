@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.2.1
+
+### `Transport`
+
+- Added optional parameter `random_seed` to `init_scene()` to reset the random seed.
+
+## 0.2.0
+
+- Added `scipy` as a required module
+
+### `Transport`
+
+- There are always 8 target objects in the scene (previously, there are 8-12 target objects)
+- Target objects can spawn in any room (previously, they spawned in the same room)
+- Fixed: Target objects sometimes spawn on the edges of the occupancy map
+- Fixed: Containers sometimes spawn in very small rooms
+- Added optional parameter `fov` to the constructor
+
+### Example controller
+
+- Simplified the logic of `single_room.py` and made it work with the changes in this update
+
+### Promo controller
+
+- `promo.py` uses init data from `init.json` to reload its state
+
+## 0.1.7
+
+### `Transport`
+
+- Fixed: Default value of `img_is_png` is True (it's now False)
+
 ## 0.1.6
 
 ### `Transport`

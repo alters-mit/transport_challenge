@@ -1,6 +1,8 @@
 from pathlib import Path
+from typing import List
+import numpy as np
 from tdw.tdw_utils import TDWUtils
-from magnebot import Magnebot, ActionStatus, Arm
+from magnebot import ActionStatus, Arm
 from transport_challenge import Transport
 
 
@@ -12,41 +14,21 @@ class SingleRoom(Transport):
 
     def get_container(self) -> int:
         """
-        This is a VERY naive approach to finding a nearby container.
-        The Magnebot will rotate around and record the IDs of each container it sees.
+        This is a VERY naive approach to finding a nearby container. It just returns the nearest one.
 
-        :return: The ID of a container within visual range of the Magnebot.
+        :return: The ID of the nearest container.
         """
 
-        d_turn: int = 90
-        turn: int = 0
-        while turn < 270:
-            # Look around you.
-            d_cam_theta = 45
-            # First pitch the camera and then yaw the camera.
-            for axis in ["pitch", "yaw"]:
-                if axis == "pitch":
-                    s = self.rotate_camera(pitch=-Magnebot.CAMERA_RPY_CONSTRAINTS[1])
-                else:
-                    s = self.rotate_camera(yaw=-Magnebot.CAMERA_RPY_CONSTRAINTS[2])
-                # Rotate the camera until we get an ActionStatus that the angle has been clamped to the RPY constraints.
-                # That means that we've rotated the camera as far as it will go.
-                while s == ActionStatus.success:
-                    visible_objects = self.get_visible_objects()
-                    for object_id in visible_objects:
-                        # We found a container.
-                        if object_id in self.containers:
-                            return object_id
-                    # Keep rotating the camera.
-                    if axis == "pitch":
-                        s = self.rotate_camera(pitch=d_cam_theta)
-                    else:
-                        s = self.rotate_camera(yaw=d_cam_theta)
-                self.reset_camera()
-            # Turn the Magnebot.
-            self.turn_by(d_turn)
-            turn += d_turn
-        raise Exception("No container found!")
+        return self._get_nearest(object_ids=self.containers)
+
+    def get_target_object(self) -> int:
+        """
+        This is a VERY naive approach to finding a nearby target object. It just returns the nearest one.
+
+        :return: The ID of the nearest target object.
+        """
+
+        return self._get_nearest(object_ids=self.target_objects)
 
     def pick_up_container(self) -> None:
         """
@@ -121,6 +103,23 @@ class SingleRoom(Transport):
         print(f"Put target object {object_id} in the container.")
         return True
 
+    def _get_nearest(self, object_ids: List[int]) -> int:
+        """
+        Get the nearest object from a list of object IDs.
+
+        :return: The nearest object in the list.
+        """
+
+        nearest = -1
+        nearest_distance = np.inf
+        for object_id in object_ids:
+            distance = np.linalg.norm(self.state.object_transforms[object_id].position -
+                                      self.state.magnebot_transform.position)
+            if distance < nearest_distance:
+                nearest_distance = distance
+                nearest = object_id
+        return nearest
+
 
 if __name__ == "__main__":
     # Instantiate the controller.
@@ -133,12 +132,12 @@ if __name__ == "__main__":
 
     m.pick_up_container()
 
-    # Transport objects to the goal position.
-    for target_object in m.target_objects[:3]:
-        in_container = m.put_object_in_container(object_id=target_object)
+    # Put an object in the container.
+    in_container = m.put_object_in_container(object_id=m.get_target_object())
+    assert in_container
 
     # If the container is mostly full, bring it to the goal position and pour it out.
-    print("Bringing target objects to the goal zone.")
+    print("Bringing target object to the goal zone.")
     m.move_to(target=TDWUtils.array_to_vector3(m.goal_position))
     m.pour_out()
     print("Poured out objects.")
