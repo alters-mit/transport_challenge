@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.1.8
+### 0.2.0
 
 - Added `scipy` as a required module
 
