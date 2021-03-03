@@ -76,9 +76,8 @@ class Transport(Magnebot):
 
     # The public S3 bucket.
     __PUBLIC_BUCKET: str = "https://tdw-public.s3.amazonaws.com"
-    # The IBM bucket.
-    __IBM_BUCKET: str = "https://s3.us-south.cloud-object-storage.appdomain.cloud/" \
-                        "tdw-transport-challenge-storage-bucket"
+    # The IBM bucket. This will be set to the value of the IBM env key if it's present.
+    __IBM_BUCKET: str = ""
     # If this key is in the environment variables, use the IBM bucket.
     __IBM_ENV_KEY: str = "TRANSPORT_CHALLENGE"
 
@@ -162,6 +161,9 @@ class Transport(Magnebot):
         self._target_object_names = list(self._target_objects.keys())
         # Whether or not we should use the IBM bucket.
         self._use_ibm_bucket: bool = Transport.__IBM_ENV_KEY in environ
+        # Set the bucket.
+        if self._use_ibm_bucket:
+            Transport.__IBM_BUCKET = environ[Transport.__IBM_ENV_KEY]
 
     def init_scene(self, scene: str, layout: int, room: int = None, goal_room: int = None,
                    random_seed: int = None) -> ActionStatus:
