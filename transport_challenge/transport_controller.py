@@ -619,6 +619,8 @@ class Transport(Magnebot):
         # Use the IBM URLs.
         if self._use_ibm_bucket:
             command["url"] = command["url"].replace(Transport.__PUBLIC_BUCKET, Transport.__IBM_BUCKET)
+            print("IBM BUCKET")
+            print(command["url"])
         return command
 
     def _cache_static_data(self, resp: List[bytes]) -> None:
