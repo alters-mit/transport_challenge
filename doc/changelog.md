@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2
+
+### `Transport`
+
+- Added: Set the `TRANSPORT_CHALLENGE` environment variable to use an alternative S3 bucket URL.
+
 ## 0.2.1
 
 ### `Transport`

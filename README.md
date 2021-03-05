@@ -19,7 +19,7 @@ The Transport Challenge API is an extension of the [Magnebot API](https://github
 
 # Usage
 
-1. Run this controller:
+1. Run this controller: `python3 controller.py` If you're running on an IBM server, you'll need to set a custom S3 bucket for the scenes, models, and materials: `TRANSPORT_CHALLENGE=https://bucket_url python3 controller`
 
 ```python
 from transport_challenge import Transport
