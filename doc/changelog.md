@@ -2,71 +2,49 @@
 
 ## 0.2.2
 
-### `Transport`
+- Added optional parameter `check_pypi_version` to the constructor
+- Simplified the format of this changelog
+
+## 0.2.2
 
 - Added: Set the `TRANSPORT_CHALLENGE` environment variable to use an alternative S3 bucket URL.
 
 ## 0.2.1
-
-### `Transport`
 
 - Added optional parameter `random_seed` to `init_scene()` to reset the random seed.
 
 ## 0.2.0
 
 - Added `scipy` as a required module
-
-### `Transport`
-
 - There are always 8 target objects in the scene (previously, there are 8-12 target objects)
 - Target objects can spawn in any room (previously, they spawned in the same room)
 - Fixed: Target objects sometimes spawn on the edges of the occupancy map
 - Fixed: Containers sometimes spawn in very small rooms
 - Added optional parameter `fov` to the constructor
-
-### Example controller
-
 - Simplified the logic of `single_room.py` and made it work with the changes in this update
-
-### Promo controller
-
 - `promo.py` uses init data from `init.json` to reload its state
 
 ## 0.1.7
 
-### `Transport`
-
 - Fixed: Default value of `img_is_png` is True (it's now False)
 
 ## 0.1.6
-
-### `Transport`
 
 - Fixed: JSONDecodeError because version check doesn't work (version check for this module has been removed)
 
 ## 0.1.5
 
 - Added license
-
-### `Transport`
-
 - Default value of `skip_frames` is 10 (was 20)
-
-### Promo controllers
-
 - Renamed `controllers/demo/demo.py` to `controllers/promos/promo.py`
 
 ## 0.1.4
-
-### `Transport`
 
 - `put_in()` will immediately stop moving the arm holding the object if the magnet or the object is within the container.
 - Improved the speed of `put_in()` and `pour_out()`.
 - Fixed: `put_in()` is too slow because the arm holding the object isn't sufficiently above the container.
 
 ## 0.1.3
-
-### `Transport`
 
 - Added optional parameter `skip_frames` (required in Magnebot 0.4.0)
 - Improved the speed of `put_in()`.
@@ -76,18 +54,10 @@
 - Fixed: `put_in()` often aims for the wrong target position above the container.
 - Fixed: `pour_out()` sometimes doesn't stop the Magnebot's wheels from turning.
 - Fixed: while objects are being dropped into a container during `put_in()`, they sometimes glitch (now they use the `discrete` collision detection mode).
-
-### Example controllers
-
 - Fixed: `single_room.py` doesn't work. Added simple navigation to make multiple attempts to pick up the target object.
-
-### Test controllers
-
 - Removed: `level.py`
 
 ## 0.1.2
-
-### `Transport` 
 
 - Set `launch_build` default value to False (was True)
 - Fixed: `put_in()` often thinks that an object isn't in a container when it actually is.
@@ -98,16 +68,8 @@
 
 ## 0.1.1
 
-### `Transport` 
-
 - Added optional parameter `img_is_png` to the constructor
 - Renamed `num_actions` to `action_cost`
 - Added: `get_target_objects_in_goal_zone()`
-
-### Example controllers
-
 - Cleaned up the code of `single_room.py`
-
-### Documentation
-
 - Added links to controllers in README
