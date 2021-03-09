@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+
+- Fixed: Crash-to-desktop because a container gets caught in the Magnebot's wheels. Now, the Magnebot will stop moving as soon as a wheel collides with a container.
+- Added: `tests/container_collision.py`
+
 ## 0.2.3
 
 - Added optional parameter `check_pypi_version` to the constructor

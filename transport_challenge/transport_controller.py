@@ -7,6 +7,7 @@ from scipy.signal import convolve2d
 from tdw.py_impact import ObjectInfo, AudioMaterial
 from tdw.librarian import ModelLibrarian
 from tdw.tdw_utils import TDWUtils
+from tdw.int_pair import IntPair
 from magnebot import Magnebot, Arm, ActionStatus, ArmJoint
 from magnebot.scene_state import SceneState
 from magnebot.paths import ROOM_MAPS_DIRECTORY, OCCUPANCY_MAPS_DIRECTORY, SCENE_BOUNDS_PATH, SPAWN_POSITIONS_PATH
@@ -780,3 +781,8 @@ class Transport(Magnebot):
         commands.append({"$type": "set_field_of_view",
                          "field_of_view": self.__fov})
         return commands
+
+    def _is_stoppable_collision(self, id_pair: IntPair) -> bool:
+        # Stop for normal reasons or if the Magnebot collides with a container.
+        return super()._is_stoppable_collision(id_pair=id_pair) or (self._includes_magnebot_joint_and_object(
+            id_pair=id_pair) and id_pair.int1 in self.containers or id_pair.int2 in self.containers)

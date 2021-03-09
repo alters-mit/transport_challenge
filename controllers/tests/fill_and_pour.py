@@ -10,7 +10,7 @@ class FillAndPour(Transport):
     """
 
     def init_scene(self, scene: str = None, layout: int = None, room: int = None,
-                   goal_room: int = None) -> ActionStatus:
+                   goal_room: int = None, random_seed: int = 0) -> ActionStatus:
         origin = np.array([0, 0, 0])
         commands = [{"$type": "load_scene",
                      "scene_name": "ProcGenScene"},
