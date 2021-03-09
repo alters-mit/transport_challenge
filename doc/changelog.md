@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.2
+## 0.2.3
 
 - Added optional parameter `check_pypi_version` to the constructor
 - Simplified the format of this changelog
