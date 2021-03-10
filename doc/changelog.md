@@ -2,6 +2,7 @@
 
 ## 0.3.0
 
+- Requires: Magnebot 1.1.0 (see changelog notes regarding collision detection)
 - Fixed: Crash-to-desktop because a container gets caught in the Magnebot's wheels. Now, the Magnebot will stop moving as soon as a wheel collides with a container.
 - Added: `tests/container_collision.py`
 
