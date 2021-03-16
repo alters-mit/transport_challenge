@@ -521,19 +521,21 @@ class Transport(Magnebot):
         self.action_cost += 1
         return status
 
-    def turn_by(self, angle: float, aligned_at: float = 3) -> ActionStatus:
+    def turn_by(self, angle: float, aligned_at: float = 3, stop_on_collision: bool = True) -> ActionStatus:
         self.action_cost += 1
-        return super().turn_by(angle=angle, aligned_at=aligned_at)
+        return super().turn_by(angle=angle, aligned_at=aligned_at, stop_on_collision=stop_on_collision)
 
-    def turn_to(self, target: Union[int, Dict[str, float]], aligned_at: float = 3) -> ActionStatus:
+    def turn_to(self, target: Union[int, Dict[str, float]], aligned_at: float = 3,
+                stop_on_collision: bool = True) -> ActionStatus:
         self.action_cost += 1
-        return super().turn_to(target=target, aligned_at=aligned_at)
+        return super().turn_to(target=target, aligned_at=aligned_at, stop_on_collision=stop_on_collision)
 
-    def move_by(self, distance: float, arrived_at: float = 0.3) -> ActionStatus:
+    def move_by(self, distance: float, arrived_at: float = 0.3, stop_on_collision: bool = True) -> ActionStatus:
         self.action_cost += 1
-        return super().move_by(distance=distance, arrived_at=arrived_at)
+        return super().move_by(distance=distance, arrived_at=arrived_at, stop_on_collision=stop_on_collision)
 
-    def reach_for(self, target: Dict[str, float], arm: Arm, absolute: bool = True, arrived_at: float = 0.125) -> ActionStatus:
+    def reach_for(self, target: Dict[str, float], arm: Arm, absolute: bool = True,
+                  arrived_at: float = 0.125) -> ActionStatus:
         self.action_cost += 1
         return super().reach_for(target=target, arm=arm, absolute=absolute, arrived_at=arrived_at)
 
@@ -757,8 +759,8 @@ class Transport(Magnebot):
 
         return len(self.get_target_objects_in_goal_zone()) == len(self.target_objects)
 
-    def _end_action(self) -> None:
-        super()._end_action()
+    def _end_action(self, previous_action_was_move: bool = False) -> None:
+        super()._end_action(previous_action_was_move=previous_action_was_move)
         self.done = self._is_challenge_done()
 
     def _get_bounds_sides(self, target: int) -> Tuple[List[np.array], List[bytes]]:
@@ -780,3 +782,7 @@ class Transport(Magnebot):
         commands.append({"$type": "set_field_of_view",
                          "field_of_view": self.__fov})
         return commands
+
+    def _is_stoppable_collision(self, object_id: int) -> bool:
+        # Stop for normal reasons or if the Magnebot collides with a container.
+        return super()._is_stoppable_collision(object_id=object_id) or object_id in self.containers
