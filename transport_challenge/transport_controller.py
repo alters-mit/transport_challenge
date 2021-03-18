@@ -704,20 +704,6 @@ class Transport(Magnebot):
         self._object_init_commands[object_id].extend(visual_material_commands)
         return object_id
 
-    def _add_object(self, model_name: str, position: Dict[str, float] = None,
-                    rotation: Dict[str, float] = None, library: str = "models_core.json",
-                    scale: Dict[str, float] = None, audio: ObjectInfo = None,
-                    mass: float = None) -> int:
-        object_id = super()._add_object(model_name=model_name, position=position, rotation=rotation, library=library,
-                                        scale=scale, audio=audio, mass=mass)
-        # If we're using the IBM bucket, use the IBM URLs.
-        if self._use_ibm_bucket:
-            for i in range(len(self._object_init_commands[object_id])):
-                if "url" in self._object_init_commands[object_id][i]:
-                    self._object_init_commands[object_id][i]["url"] = self._object_init_commands[object_id][i]["url"].\
-                        replace(Transport.__PUBLIC_BUCKET, Transport.__IBM_BUCKET)
-        return object_id
-
     def _get_reset_arm_commands(self, arm: Arm, reset_torso: bool) -> List[dict]:
         if arm in self._container_arm_reset_angles:
             self._append_ik_commands(angles=self._container_arm_reset_angles[arm], arm=arm)
@@ -778,6 +764,14 @@ class Transport(Magnebot):
         return sides, resp
 
     def _get_scene_init_commands(self, magnebot_position: Dict[str, float] = None) -> List[dict]:
+        # If we're using the IBM bucket, use the IBM URLs.
+        if self._use_ibm_bucket:
+            for object_id in self._object_init_commands:
+                for i in range(len(self._object_init_commands[object_id])):
+                    if "url" in self._object_init_commands[object_id][i]:
+                        self._object_init_commands[object_id][i]["url"] =\
+                            self._object_init_commands[object_id][i]["url"].replace(Transport.__PUBLIC_BUCKET,
+                                                                                    Transport.__IBM_BUCKET)
         commands = super()._get_scene_init_commands(magnebot_position=magnebot_position)
         commands.append({"$type": "set_field_of_view",
                          "field_of_view": self.__fov})

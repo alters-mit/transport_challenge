@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- Fixed: Object URLs are not set correctly if the `TRANSPORT_CHALLENGE` environment variable is provided
+
 ## 0.3.0
 
 - Requires: Magnebot 1.1.0 (see changelog notes regarding collision detection)
