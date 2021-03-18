@@ -552,7 +552,11 @@ class Transport(Magnebot):
         self.target_objects.clear()
         self.containers.clear()
         commands = super().get_scene_init_commands(scene=scene, layout=layout, audio=audio)
-
+        # Set the object URLs.
+        if self._use_ibm_bucket:
+            for i in range(len(commands)):
+                if commands[i]["$type"] == "add_object":
+                    commands[i]["url"] = commands[i]["url"].replace(Transport.__PUBLIC_BUCKET, Transport.__IBM_BUCKET)
         # Load the map of the rooms in the scene, the occupancy map, and the scene bounds.
         room_map = np.load(str(ROOM_MAPS_DIRECTORY.joinpath(f"{scene[0]}.npy").resolve()))
         self.occupancy_map = np.load(str(OCCUPANCY_MAPS_DIRECTORY.joinpath(f"{scene[0]}_{layout}.npy").resolve()))
