@@ -3,6 +3,7 @@
 ## 0.3.1
 
 - Fixed: Object URLs are not set correctly if the `TRANSPORT_CHALLENGE` environment variable is provided
+- Fixed: `promo.py` doesn't work as intended due to collisions with containers
 
 ## 0.3.0
 

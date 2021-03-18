@@ -47,7 +47,8 @@ class Demo(Transport):
         self._image_count = 0
         self._to_transport: List[int] = list()
 
-    def init_scene(self, scene: str, layout: int, room: int = None, goal_room: int = None) -> ActionStatus:
+    def init_scene(self, scene: str, layout: int, room: int = None, goal_room: int = None,
+                   random_seed: int = None) -> ActionStatus:
         status = super().init_scene(scene=scene, layout=layout, room=room)
 
         self._to_transport = self.target_objects[:]
@@ -113,7 +114,7 @@ class Demo(Transport):
                 self.state.object_transforms[x].position - self.state.magnebot_transform.position)))
             object_id = self._to_transport[0]
             # Go to the object and pick it up.
-            self.move_to(target=object_id)
+            self.move_to(target=object_id, stop_on_collision=False)
             self.pick_up(target=object_id, arm=Arm.right)
             # Put the object in the container.
             self.put_in()
@@ -123,7 +124,7 @@ class Demo(Transport):
         # Follow the path to the other room.
         path = Demo.PATH[1:]
         for waypoint in path:
-            self.move_to(target=TDWUtils.array_to_vector3(waypoint))
+            self.move_to(target=TDWUtils.array_to_vector3(waypoint), stop_on_collision=False)
         self.pour_out()
 
     def go_to_start(self) -> None:
@@ -133,7 +134,7 @@ class Demo(Transport):
 
         path = np.flip(Demo.PATH[:-1], axis=0)
         for waypoint in path:
-            self.move_to(target=TDWUtils.array_to_vector3(waypoint))
+            self.move_to(target=TDWUtils.array_to_vector3(waypoint), stop_on_collision=False)
 
     def teleport_objects(self) -> None:
         """
