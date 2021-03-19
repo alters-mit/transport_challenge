@@ -41,8 +41,8 @@ if __name__ == "__main__":
     # Collide with the table leg or chair.
     m.move_by(0.8, stop_on_collision=False)
     # Try to pick up the object. This sometimes succeeds, and sometimes doesn't (due to Unity physics).
-    status = m.pick_up(target=target, arm=Arm.right)
-    if status != ActionStatus.success:
+    m.pick_up(target=target, arm=Arm.right)
+    if target not in m.state.held[Arm.right]:
         m.pick_up(target=target, arm=Arm.left)
     # Back away from the table.
     m.move_by(-0.8, stop_on_collision=False)
