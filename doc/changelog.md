@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2
+
+- Added: `promo_controller.y` Base class for promo controllers
+- Added: `failure.py` Demo of the Magnebot failing a task
+
 ## 0.3.1
 
 - Fixed: Object URLs are not set correctly if the `TRANSPORT_CHALLENGE` environment variable is provided
