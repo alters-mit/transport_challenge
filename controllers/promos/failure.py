@@ -47,7 +47,7 @@ if __name__ == "__main__":
     if target in m.state.held[Arm.right]:
         m.drop(target=target, arm=Arm.right, wait_for_objects=False)
     m.reset_arm(arm=Arm.right)
-    m.move_by(-0.2, arrived_at=0.05)
+    m.move_by(-0.2, arrived_at=0.05, stop_on_collision=False)
     m.pick_up(target=target, arm=Arm.right)
     m.move_by(-0.8, stop_on_collision=False)
     target = m.target_objects[1]
