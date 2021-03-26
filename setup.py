@@ -21,5 +21,5 @@ setup(
     ],
     keywords='unity simulation tdw magnebot',
     packages=find_packages(),
-    install_requires=['magnebot', 'numpy', 'tdw', 'scipy']
+    install_requires=['magnebot==1.1.1', 'numpy', 'tdw', 'scipy']
 )

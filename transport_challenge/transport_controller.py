@@ -102,8 +102,7 @@ class Transport(Magnebot):
 
     def __init__(self, port: int = 1071, launch_build: bool = False, screen_width: int = 256, screen_height: int = 256,
                  debug: bool = False, auto_save_images: bool = False, images_directory: str = "images",
-                 random_seed: int = None, img_is_png: bool = False, skip_frames: int = 10, fov: float = 90,
-                 check_pypi_version: bool = True):
+                 random_seed: int = None, img_is_png: bool = False, skip_frames: int = 10, fov: float = 90):
         """
         :param port: The socket port. [Read this](https://github.com/threedworld-mit/tdw/blob/master/Documentation/getting_started.md#command-line-arguments) for more information.
         :param launch_build: If True, the build will launch automatically on the default port (1071). If False, you will need to launch the build yourself (for example, from a Docker container).
@@ -116,13 +115,12 @@ class Transport(Magnebot):
         :param img_is_png: If True, the `img` pass images will be .png files. If False, the `img` pass images will be .jpg files, which are smaller; the build will run approximately 2% faster.
         :param skip_frames: The build will return output data this many frames per `communicate()` call. This will greatly speed up the simulation. If you want to render every frame, set this to 0.
         :param fov: The field of view for the Magnebot's camera.
-        :param check_pypi_version: If True, compare the locally installed version of TDW and Magnebot to the most recent versions on PyPi.
         """
 
         super().__init__(port=port, launch_build=launch_build, screen_width=screen_width, screen_height=screen_height,
                          debug=debug, auto_save_images=auto_save_images, images_directory=images_directory,
                          random_seed=random_seed, img_is_png=img_is_png, skip_frames=skip_frames,
-                         check_pypi_version=check_pypi_version)
+                         check_pypi_version=False)
         """:field
         The IDs of each target object in the scene.
         """
