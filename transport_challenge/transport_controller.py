@@ -1,4 +1,5 @@
 from os import environ
+from pkg_resources import get_distribution
 from json import loads
 from csv import DictReader
 from typing import List, Dict, Tuple, Optional, Union
@@ -99,6 +100,10 @@ class Transport(Magnebot):
     The total number of target objects in a scene.
     """
     NUM_TARGET_OBJECTS: int = 8
+    """:class_var
+    The required version of the Magnebot Python module. Don't upgrade past this version!
+    """
+    MAGNEBOT_VERSION: str = "1.1.2"
 
     def __init__(self, port: int = 1071, launch_build: bool = False, screen_width: int = 256, screen_height: int = 256,
                  debug: bool = False, auto_save_images: bool = False, images_directory: str = "images",
@@ -116,6 +121,11 @@ class Transport(Magnebot):
         :param skip_frames: The build will return output data this many frames per `communicate()` call. This will greatly speed up the simulation. If you want to render every frame, set this to 0.
         :param fov: The field of view for the Magnebot's camera.
         """
+
+        magnebot_version = str(get_distribution("magnebot")).split(" ")[1]
+        assert magnebot_version == Transport.MAGNEBOT_VERSION, f"You have the wrong version of the Magnebot Python module. " \
+                                                               f"To re-install:\n1. pip3 uninstall magnebot\n" \
+                                                               f"2. pip3 install magnebot=={Transport.MAGNEBOT_VERSION}"
 
         super().__init__(port=port, launch_build=launch_build, screen_width=screen_width, screen_height=screen_height,
                          debug=debug, auto_save_images=auto_save_images, images_directory=images_directory,
