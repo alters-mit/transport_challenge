@@ -59,6 +59,7 @@ This API includes the following changes and additions:
 | `TARGET_OBJECT_MASS` | float | The mass of each target object. |
 | `GOAL_ZONE_RADIUS` | float | The goal zone is a circle defined by `self.goal_center` and this radius value. |
 | `NUM_TARGET_OBJECTS` | int | The total number of target objects in a scene. |
+| `MAGNEBOT_VERSION` | str | The required version of the Magnebot Python module. Don't upgrade past this version! |
 
 ***
 

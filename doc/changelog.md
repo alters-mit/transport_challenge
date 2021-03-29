@@ -2,8 +2,12 @@
 
 ## 0.3.2
 
+- **The Transport Challenge API requires Magnebot v1.1.2 and should NOT be upgraded past this version!**
+  - pip will install the correct version of Magnebot
+  - Added: `Transport.MAGNEBOT_VERSION` The required version of the Magnebot Python module
 - Added: `promo_controller.y` Base class for promo controllers
 - Added: `failure.py` Demo of the Magnebot failing a task
+- Added: `success.py` Demo of the Magnebot succeeding at a task
 
 ## 0.3.1
 

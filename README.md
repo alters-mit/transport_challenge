@@ -17,7 +17,6 @@ The Transport Challenge API is an extension of the [Magnebot API](https://github
 3. `cd path/to/transport_challenge` (Replace `path/to` with the actual path)
 4. `pip3 install -e .` This will install all underlying modules, including `magnebot` and `tdw`
 5. Make sure that the underlying TDW system is working correctly. See: [Getting Started With TDW](https://github.com/threedworld-mit/tdw/blob/master/Documentation/getting_started.md#Requirements)
-6. Make sure that you have the correct version of the `magnebot` module: `pip3 show magnebot`. The correct version is `1.1.1` If you have the wrong version: `pip3 install magnebot==1.1.1 --force-reinstall` 
 
 # Usage
 
