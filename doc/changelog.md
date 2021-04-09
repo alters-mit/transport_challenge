@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3
+
+- Requires: TDW 1.8.7.0
+
 ## 0.3.2
 
 - **The Transport Challenge API requires Magnebot v1.1.2 and should NOT be upgraded past this version!**

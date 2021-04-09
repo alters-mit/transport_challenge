@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='transport_challenge',
-    version="0.3.2",
+    version="0.3.3",
     description='Transport Challenge API. Extends the Magnebot API and the TDW API.',
     long_description='Transport Challenge API. Extends the Magnebot API and the TDW API.',
     url='https://github.com/alters-mit/transport_challenge',
@@ -21,5 +21,5 @@ setup(
     ],
     keywords='unity simulation tdw magnebot',
     packages=find_packages(),
-    install_requires=['magnebot==1.1.2', 'numpy', 'tdw', 'scipy']
+    install_requires=['magnebot==1.1.2', 'numpy', 'tdw==1.8.7.0', 'scipy']
 )
