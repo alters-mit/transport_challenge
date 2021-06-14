@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.4
+
+- Added: `util/target_object_sizes.py` Print the size of each target object.
+- Documentation now includes the capacity of the containers.
+
 ## 0.3.3
 
 - Requires: TDW 1.8.7.0

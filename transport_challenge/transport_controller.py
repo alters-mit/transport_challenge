@@ -63,6 +63,14 @@ class Transport(Magnebot):
     | `put_in()` | 1 |
     | `pour_out()` | 1 |
     | `get_target_objects_in_goal_zone()` | 0 |
+
+    ## Containers and target objects.
+
+    The [length x height x width] dimensions of the containers are: `[0.457, 0.305, 0.457]`.
+
+    Containers can hold more than one target object. Because this is a physics simulation, it is possible for objects to spill out of the container.
+
+    Target objects are chosen from a subset of TDW's model library. To get the size of each target object, run `util/target_object_sizes.py` (located in the Transport Challenge repo).
     """
 
     """:class_var

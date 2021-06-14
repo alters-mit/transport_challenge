@@ -50,6 +50,14 @@ This API includes the following changes and additions:
 | `pour_out()` | 1 |
 | `get_target_objects_in_goal_zone()` | 0 |
 
+## Containers and target objects.
+
+The [length x height x width] dimensions of the containers are: `[0.457, 0.305, 0.457]`.
+
+Containers can hold more than one target object. Because this is a physics simulation, it is possible for objects to spill out of the container.
+
+Target objects are chosen from a subset of TDW's model library. To get the size of each target object, run `util/target_object_sizes.py` (located in the Transport Challenge repo).
+
 ***
 
 ## Class Variables
@@ -83,7 +91,7 @@ This API includes the following changes and additions:
 
 ### Transport Challenge
 
-_These functions are unique to the Transport Challenge API._
+These functions are unique to the Transport Challenge API.
 
 #### pick_up
 
@@ -153,7 +161,7 @@ _Returns:_  A list of IDs of all of the target objects currently in the goal zon
 
 ### Inherited from Magnebot
 
-_These functions are inherited from the Magnebot API but include additional functionality. Read the Magnebot API for a list of all available functions._
+These functions are inherited from the Magnebot API but include additional functionality. Read the Magnebot API for a list of all available functions.
 
 #### init_scene
 
