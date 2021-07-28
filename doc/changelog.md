@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.5
+
+- Fixed: README points to the wrong version of the build.
+
 ## 0.3.4
 
 - Added: `util/target_object_sizes.py` Print the size of each target object.

@@ -12,11 +12,11 @@ The Transport Challenge API is an extension of the [Magnebot API](https://github
 
 # Installation
 
-1. [Download the latest TDW build and unzip it.](https://github.com/threedworld-mit/tdw/releases/latest)
-2. Clone this repo
-3. `cd path/to/transport_challenge` (Replace `path/to` with the actual path)
+1. [Download TDW build v1.8.7](https://github.com/threedworld-mit/tdw/releases/tag/v1.8.7)
+2. `git clone https://github.com/alters-mit/transport_challenge.git`
+3. `cd transport_challenge` 
 4. `pip3 install -e .` This will install all underlying modules, including `magnebot` and `tdw`
-5. Make sure that the underlying TDW system is working correctly. See: [Getting Started With TDW](https://github.com/threedworld-mit/tdw/blob/master/Documentation/getting_started.md#Requirements)
+5. Make sure that the underlying TDW system is working correctly. See: [Getting Started With TDW](https://github.com/threedworld-mit/tdw/blob/master/Documentation/getting_started.md#Requirements) ***Ignore warnings about upgrading TDW!***
 
 # Usage
 
