@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.6
+
+- Requires: Magnebot 1.1.1 (was 1.1.2, which was incorrect)
+- Requires: ikpy 3.1
+- Added install instructions to the README for downgrading `magnebot` and `tdw`
+
 ## 0.3.5
 
 - Fixed: README points to the wrong version of the build.

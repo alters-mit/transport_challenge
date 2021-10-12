@@ -12,11 +12,26 @@ The Transport Challenge API is an extension of the [Magnebot API](https://github
 
 # Installation
 
+Check if you've already installed `magnebot` or `tdw` on your computer: if `pip3 show magnebot` or `pip3 show tdw` prints any text, then the module is installed.
+
+If `magnebot` or `tdw` is *not* already installed on this computer:
+
 1. [Download TDW build v1.8.7](https://github.com/threedworld-mit/tdw/releases/tag/v1.8.7)
 2. `git clone https://github.com/alters-mit/transport_challenge.git`
 3. `cd transport_challenge` 
 4. `pip3 install -e .` This will install all underlying modules, including `magnebot` and `tdw`
 5. Make sure that the underlying TDW system is working correctly. See: [Getting Started With TDW](https://github.com/threedworld-mit/tdw/blob/master/Documentation/getting_started.md#Requirements) ***Ignore warnings about upgrading TDW!***
+
+If `magnebot` or `tdw` *is* already installed on this computer:
+
+1. `pip3 uninstall magnebot`
+2. `pip3 uninstall tdw`
+3. `pip3 unintall ikpy`
+4. [Download TDW build v1.8.7](https://github.com/threedworld-mit/tdw/releases/tag/v1.8.7)
+5. `git clone https://github.com/alters-mit/transport_challenge.git`
+6. `cd transport_challenge` 
+7. `pip3 install -e .` This will install all underlying modules, including `magnebot` and `tdw`
+8. Make sure that the underlying TDW system is working correctly. See: [Getting Started With TDW](https://github.com/threedworld-mit/tdw/blob/master/Documentation/getting_started.md#Requirements) ***Ignore warnings about upgrading TDW!***
 
 # Usage
 
