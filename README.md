@@ -35,7 +35,7 @@ If `magnebot` or `tdw` *is* already installed on this computer:
 
 # Usage
 
-1. Run this controller: `python3 controller.py` If you're running on an IBM server, you'll need to set a custom S3 bucket for the scenes, models, and materials: `TRANSPORT_CHALLENGE=https://bucket_url python3 controller`
+1. Run this controller: `python3 controller.py` If you're running on an IBM server, you'll need to set a custom S3 bucket for the scenes, models, and materials: `TRANSPORT_CHALLENGE=https://bucket_url python3 controller`. If this is a local path, set the variable to the *absolute* path, i.e. `TRANSPORT_CHALLENGE=file:///home/<user>/model_library python3 controller`
 
 ```python
 from transport_challenge import Transport
