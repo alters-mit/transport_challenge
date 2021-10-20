@@ -111,7 +111,7 @@ class Transport(Magnebot):
     """:class_var
     The required version of the Magnebot Python module. Don't upgrade past this version!
     """
-    MAGNEBOT_VERSION: str = "1.1.2"
+    MAGNEBOT_VERSION: str = "1.1.1"
 
     def __init__(self, port: int = 1071, launch_build: bool = False, screen_width: int = 256, screen_height: int = 256,
                  debug: bool = False, auto_save_images: bool = False, images_directory: str = "images",

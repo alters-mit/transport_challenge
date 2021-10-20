@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.7
+
+- Fixed: Crash because Magnebot 1.1.1 is installed
+
 ## 0.3.6
 
 - Requires: Magnebot 1.1.1 (was 1.1.2, which was incorrect)
